@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{# @var article \Aolr\ProductionBundle\Entity\Article#}
+<doi_batch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.crossref.org/schema/5.3.0 https://www.crossref.org/schemas/crossref5.3.0.xsd"
+           xmlns="http://www.crossref.org/schema/5.3.0" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1"
+           xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML" version="5.3.0">
+    <head>
+        <doi_batch_id>aolr-{{ date().format('YmdHis') }}</doi_batch_id>
+        <timestamp>{{ date().timestamp }}</timestamp>
+        <depositor>
+            <depositor_name>{{ article.journal.publisherName|default('') }}</depositor_name>
+            {% if options.email|default(false) %}
+            <email_address>{{ options.email|default('') }}</email_address>
+            {% endif %}
+        </depositor>
+        <registrant>{{ article.journal.publisherName|default('') }}</registrant>
+    </head>
+    <body>
+    <journal>
+        <journal_metadata language="en" reference_distribution_opts="any">
+            <full_title>{{ article.journal.title|default('') }}</full_title>
+            <abbrev_title>{{ article.journal.abbrevTitle|default('') }}</abbrev_title>
+            <issn media_type="electronic">{{ article.journal.eIssn|default('') }}</issn>
+        </journal_metadata>
+        <journal_article language="en" publication_type="full_text" reference_distribution_opts="any">
+            <titles>
+                <title>{{ article.title|default('') }}</title>
+            </titles>
+            <contributors>
+                {# @var author \Aolr\ProductionBundle\Entity\Author #}
+                {% for author in article.authors %}
+                    <person_name sequence="{{ loop.first ? 'first' : 'additional' }}" contributor_role="author">
+                        <given_name>{{ author.givenName|default('') }}</given_name>
+                        <surname>{{ author.surname|default('') }}</surname>
+                        <affiliations>
+                            {# @var aff \Aolr\ProductionBundle\Entity\Affiliation #}
+                            {% for aff in author.affiliations %}
+                                {% if aff.rorId %}
+                                    <institution>
+                                        <institution_id type="ror">{{ aff.rorId }}</institution_id>
+                                    </institution>
+                                {% else %}
+                                    <institution>
+                                        <institution_name>{{ aff.content }}</institution_name>
+                                    </institution>
+                                {% endif %}
+                            {% endfor %}
+                        </affiliations>
+                        {% if author.orcid %}
+                        <ORCID authenticated="true">{{ author.orcid }}</ORCID>
+                        {% endif %}
+                    </person_name>
+                {% endfor %}
+            </contributors>
+            <jats:abstract>
+                <jats:p xml:lang="en">{{ article.crossrefAbstract|raw }}</jats:p>
+            </jats:abstract>
+            <publication_date media_type="online">
+                <month>{{ article.publishedDate|date('m')|default('01') }}</month>
+                <day>{{ article.publishedDate|date('d')|default('01') }}</day>
+                <year>{{ article.publishedDate|default(date())|date('Y') }}</year>
+            </publication_date>
+            <acceptance_date media_type="online">
+                <month>{{ article.acceptedDate|date('m')|default('01') }}</month>
+                <day>{{ article.acceptedDate|date('d')|default('01') }}</day>
+                <year>{{ article.acceptedDate|default(date())|date('Y') }}</year>
+            </acceptance_date>
+            <publisher_item>
+                <item_number item_number_type="article_number">{{ article.number|default('') }}</item_number>
+            </publisher_item>
+            <archive_locations>
+                <archive name="Internet Archive"/>
+            </archive_locations>
+            <archive_locations>
+                <archive name="Internet Archive"/>
+            </archive_locations>
+            <doi_data>
+                <doi>{{ article.doi|default('') }}</doi>
+                <resource content_version="vor" mime_type="text/html">https://journal.aolr.pub/{{ article.doi|default('') }}</resource>
+            </doi_data>
+            <citation_list>
+                {# @var reference \Aolr\ProductionBundle\Entity\Reference#}
+                {% for reference in article.references %}
+                    <citation key="ref{{ loop.index + 1 }}">
+                        <doi>{{ reference.doi|default('') }}</doi>
+                        <unstructured_citation>{{ reference.rawText }}</unstructured_citation>
+                    </citation>
+                {% endfor %}
+            </citation_list>
+        </journal_article>
+    </journal>
+    </body>
+</doi_batch>

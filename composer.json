@@ -1,0 +1,14 @@
+{
+    "name": "aolr/production-bundle",
+    "require": {
+        "symfony/dom-crawler": "5.4.*",
+        "phpoffice/phpword": "v0.18.*",
+        "twig/twig": "^2.12|^3.0"
+    },
+    "authors": [
+        {
+            "name": "Miles",
+            "email": "support@aolr.pub"
+        }
+    ]
+}

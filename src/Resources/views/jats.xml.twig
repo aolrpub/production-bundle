@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "JATS-journalpublishing1-3.dtd">
+{# @var article \Aolr\ProductionBundle\Entity\Article #}
+{% set articleIdSuffix = article.id ? '-' ~ article.id : '' %}
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.3" xml:lang="en">
+    <front>
+        <journal-meta>
+            <journal-id journal-id-type="publisher-id">{{ article.journal.title|default('')|lower }}</journal-id>
+            <journal-title-group>
+                <journal-title>{{ article.journal.title|default('') }}</journal-title>
+                <abbrev-journal-title abbrev-type="publisher">{{ article.journal.title|default('') }}</abbrev-journal-title>
+                <abbrev-journal-title abbrev-type="pubmed">{{ article.journal.title|default('') }}</abbrev-journal-title>
+            </journal-title-group>
+            <issn pub-type="epub">{{ article.journal.eIssn|default('0000-0000') }}</issn>
+            {% if article.journal.publisherName|default(false) %}
+            <publisher>
+                <publisher-name>{{ article.journal.publisherName }}</publisher-name>
+            </publisher>
+            {% endif %}
+        </journal-meta>
+        <article-meta>
+            <article-id pub-id-type="doi">{{ article.doi|default('') }}</article-id>
+            <article-id pub-id-type="publisher-id">{{ article.id|default('') }}</article-id>
+            {% if article.categories|default(false) %}
+            <article-categories>
+                {% for subject in article.categories|default(['']) %}
+                <subj-group>
+                    <subject>{{ subject }}</subject>
+                </subj-group>
+                {% endfor %}
+            </article-categories>
+            {% endif %}
+            <title-group>
+                <article-title>{{ article.title|raw }}</article-title>
+            </title-group>
+            {% if article.authors.count > 0 %}
+            <contrib-group>
+                {# @var author \Aolr\ProductionBundle\Entity\Author #}
+                {% for author in article.authors %}
+                <contrib contrib-type="author">
+                    {% if author.orcid|default(false) %}
+                    <contrib-id contrib-id-type="orcid" authenticated="true">https://orcid.org/0000-0002-9036-4304</contrib-id>
+                    {% endif %}
+                    <name>
+                        <surname>{{ author.surname }}</surname>
+                        <given-names>{{ author.givenName }}</given-names>
+                    </name>
+                    {% for xref in author.xRefs %}
+                        {% set rid = article.id ? xref.id ~ '-' ~ article.id : xref.id %}
+                        <xref rid="{{ rid }}" ref-type="{{ xref.type }}">{{ xref.value|raw }}</xref>
+                    {% endfor %}
+                </contrib>
+                {% endfor %}
+            </contrib-group>
+            {% endif %}
+            {% if article.editors.count > 0 %}
+            <contrib-group>
+                {% for editor in article.editors %}
+                <contrib contrib-type="editor">
+                    <name>
+                        <surname>{{ editor.surname }}</surname>
+                        <given-names>{{ editor.givenName }}</given-names>
+                    </name>
+                    <role>{{ editor.role }}</role>
+                </contrib>
+                {% endfor %}
+            </contrib-group>
+            {% endif %}
+            {% for aff in article.numberedAffs %}
+            <aff id="{{ aff.id ~ articleIdSuffix }}"><label>{{ aff.label }}</label>{{ aff.content|raw }}</aff>
+            {% endfor %}
+            {% if article.authorNotes.count > 0 %}
+            <author-notes>
+                {% for note in article.authorNotes %}
+                    {% if note.type == 'corresp' %}
+                    <corresp id="{{ note.id ~ articleIdSuffix }}"><label>{{ note.label }}</label>{{ note.content|raw }}</corresp>
+                    {% else %}
+                    <fn id="{{ note.id ~ articleIdSuffix }}">
+                        <label>{{ note.label|raw }}</label>
+                        <p>{{ note.content|raw }}</p>
+                    </fn>
+                    {% endif %}
+                {% endfor %}
+            </author-notes>
+            {% endif %}
+            <pub-date pub-type="epub">
+                <day>{{ article.publishedDate|date('d')|default('01') }}</day>
+                <month>{{ article.publishedDate|date('m')|default('01') }}</month>
+                <year>{{ article.publishedDate|date('Y')|default(date()|date('Y')) }}</year>
+            </pub-date>
+            {% if article.printDate %}
+            <pub-date pub-type="epub">
+                <day>{{ article.printDate|date('d') }}</day>
+                <month>{{ article.printDate|date('m') }}</month>
+                <year>{{ article.printDate|date('Y') }}</year>
+            </pub-date>
+            {% endif %}
+            {% if article.volume %}
+                <volume>{{ article.volume|default('') }}</volume>
+            {% endif %}
+            {% if article.issue %}
+                <issue>{{ article.issue|default('') }}</issue>
+            {% endif %}
+            {% if article.number %}
+                <elocation-id>{{ article.number|default('') }}</elocation-id>
+            {% endif %}
+            <history>
+                {% if article.receivedDate %}
+                <date date-type="received">
+                    <day>{{ article.receivedDate|date('d') }}</day>
+                    <month>{{ article.receivedDate|date('m') }}</month>
+                    <year>{{ article.receivedDate|date('Y') }}</year>
+                </date>
+                {% endif %}
+                {% if article.acceptedDate %}
+                <date date-type="accepted">
+                    <day>{{ article.acceptedDate|date('d') }}</day>
+                    <month>{{ article.acceptedDate|date('m') }}</month>
+                    <year>{{ article.acceptedDate|date('Y') }}</year>
+                </date>
+                {% endif %}
+            </history>
+            {% if article.permission %}
+            <permissions>
+                <copyright-statement>{{ article.permission.statement|raw }}</copyright-statement>
+                <copyright-year>{{ article.permission.year }}</copyright-year>
+                <license license-type="{{ article.permission.licenseType|default('opend-acess') }}">
+                    {% for lContent in article.permission.licenseContents|default([]) %}
+                    <license-p>{{ lContent|raw }}</license-p>
+                    {% endfor %}
+                </license>
+            </permissions>
+            {% endif %}
+            <abstract>
+                <p>{{ article.abstract|raw }}</p>
+            </abstract>
+            <kwd-group>
+                {% for keyword in article.keywords %}
+                    <kwd>{{ keyword|raw }}</kwd>
+                {% endfor %}
+            </kwd-group>
+        </article-meta>
+    </front>
+    <body>
+
+    {% macro _render_section_contents(contents, articleIdSuffix) %}
+        {% if contents %}
+            {% for content in contents %}
+                {% if content.type == constant('Aolr\\ProductionBundle\\Entity\\Content::TYPE_FORMULA') %}
+                    <disp-formula id="FD{{ content.id ~ articleIdSuffix }}">
+                        <label>{{ content.label }}</label>
+                        {{ content.info|raw }}
+                    </disp-formula>
+                {% else %}
+                    <p>{{ content|raw }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endmacro %}
+    {# @var section \Aolr\ProductionBundle\Entity\Section #}
+    {% for section in article.sections %}
+        <sec id="{{ section.id ~ articleIdSuffix }}" sec-type="{{ section.type }}">
+        <title>{{ section.title }}</title>
+        {{ _self._render_section_contents(section.contents, articleIdSuffix) }}
+        {% for subSection in section.children %}
+            <sec id="{{ subSection.computedId ~ articleIdSuffix }}">
+            <title>{{ subSection.title }}</title>
+            {{ _self._render_section_contents(subSection.contents, articleIdSuffix) }}
+            {% for thridSection in subSection.children %}
+                <sec id="{{ thridSection.computedId ~ articleIdSuffix }}">
+                <title>{{ thridSection.title }}</title>
+                {{ _self._render_section_contents(thridSection.contents, articleIdSuffix) }}
+                </sec>
+            {% endfor %}
+            </sec>
+        {% endfor %}
+        </sec>
+    {% endfor %}
+    </body>
+    <back>
+        {% macro render_backitem_contents(contents, articleId) %}
+            {% for content in contents %}
+                {% set id = content.id|default('') ~ (articleId ? '-' ~ articleId : '') %}
+                {% if content.type == constant('Aolr\\ProductionBundle\\Entity\\Content::TYPE_TEXT') %}
+                    <p>{{ content.info|raw }}</p>
+                {% elseif content.type == constant('Aolr\\ProductionBundle\\Entity\\Content::TYPE_TABLE') %}
+                    <table-wrap id="{{ id }}" position="float">
+                        <object-id pub-id-type="pii">{{ id }}</object-id>
+                        <label>{{ content.label|raw }}</label>
+                        <caption>
+                            <p>{{ content.caption|raw }}</p>
+                        </caption>
+                        {{ content.info|raw }}
+                    </table-wrap>
+                {% elseif content.type == constant('Aolr\\ProductionBundle\\Entity\\Content::TYPE_FIG') %}
+                    <fig id="{{ id }}" position="float">
+                        <label>{{ content.label|raw }}</label>
+                        <caption>
+                            <p>{{ content.info|raw }}</p>
+                        </caption>
+                        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{{ id }}.{{ content.graphicExtension|default('') }}"/>
+                    </fig>
+                {% endif  %}
+            {% endfor %}
+        {% endmacro %}
+        {# @var backItem \Aolr\ProductionBundle\Entity\BackItem #}
+        {% for backItem in article.backItems %}
+            {% set id = backItem.type ~ backItem.orderNumber ~ articleIdSuffix %}
+            {% if backItem.type == constant('Aolr\\ProductionBundle\\Entity\\BackItem::TYPE_APP') %}
+                <app-group>
+                    <app id="{{ id }}">
+                        <title>{{ backItem.title }}</title>
+                        {{ _self.render_backitem_contents(backItem.contents, article.id) }}
+                        {% if backItem.isSupplementary %}
+                            <supplementary-material xmlns:xlink="http://www.w3.org/1999/xlink" id="{{ article.id ?  article.id ~ '-' : ''}}s001" xlink:href="{{ article.id ?  article.id ~ '-' : ''}}s001.zip"/>
+                        {% endif %}
+                    </app>
+                </app-group>
+            {% elseif backItem.type == constant('Aolr\\ProductionBundle\\Entity\\BackItem::TYPE_ACK')  %}
+                <ack>
+                    <title>{{ backItem.title }}</title>
+                    {{ _self.render_backitem_contents(backItem.contents, article.id) }}
+                </ack>
+            {% elseif backItem.type == constant('Aolr\\ProductionBundle\\Entity\\BackItem::TYPE_NOTES')%}
+                <notes {{ backItem.attrType ? 'notes-type="COI-statement"' : '' }}>
+                    <title>{{ backItem.title }}</title>
+                    {{ _self.render_backitem_contents(backItem.contents, article.id) }}
+                </notes>
+            {% endif %}
+        {% endfor %}
+        <ref-list>
+            <title>References</title>
+
+            {# @var reference \Aolr\ProductionBundle\Entity\Reference #}
+            {% for reference in article.references %}
+                <ref id="B{{ reference.id }}">
+                    <label>{{ reference.label }}</label>
+                    <element-citation publication-type="{{ reference.publicationType }}">
+                        {% if reference.persons|default(false) %}
+                            <person-group person-group-type="author">
+                                {% for person in reference.persons %}
+                                    <name>
+                                        <surname>{{ person.surname }}</surname>
+                                        <given-names>{{ person.givenName }}</given-names>
+                                    </name>
+                                {% endfor %}
+                                {% if reference.etal %}
+                                    <etal/>
+                                {% endif %}
+                            </person-group>
+                        {% endif %}
+                        {% if reference.editors|default(false) %}
+                            <person-group person-group-type="editor">
+                                {% for editor in reference.editors %}
+                                    <name>
+                                        <surname>{{ editor.surname }}</surname>
+                                        <given-names>{{ editor.givenName }}</given-names>
+                                    </name>
+                                {% endfor %}
+                                {% if reference.etal %}
+                                    <etal/>
+                                {% endif %}
+                            </person-group>
+                        {% endif %}
+                        <article-title>{{ reference.articleTitle }}</article-title>
+                        {% if reference.source %}
+                            <source>{{ reference.source }}</source>
+                        {% endif %}
+                        {% if reference.publisher|default(false) %}
+                            <publisher-name>reference.publisher</publisher-name>
+                        {% endif %}
+                        {% if reference.location|default(false) %}
+                            <publisher-loc>{{ reference.location }}</publisher-loc>
+                        {% endif %}
+                        {% if reference.year %}
+                            <year>{{ reference.year }}</year>
+                        {% endif %}
+                        {% if reference.volume %}
+                            <volume>{{ reference.volume }}</volume>
+                        {% endif %}
+                        {% if reference.fPage %}
+                            <fpage>{{ reference.fPage }}</fpage>
+                        {% endif %}
+                        {% if reference.lPage|default(false) %}
+                            <lpage>{{ reference.lPage }}</lpage>
+                        {% endif %}
+                        {% if reference.doi|default(false) %}
+                            <pub-id pub-id-type="doi">{{ reference.doi }}</pub-id>
+                        {% endif %}
+                    </element-citation>
+                </ref>
+            {% endfor %}
+        </ref-list>
+        <sec sec-type="display-objects">
+            <title>Figures and Tables</title>
+            {% for displayObj in article.displayObjects %}
+                {% set objectId = displayObj.id ~ articleIdSuffix %}
+                {% if displayObj.type == 'fig' %}
+                    <fig id="{{ objectId }}" position="float">
+                        <label>{{ displayObj.label }}</label>
+                        <caption><p>{{ displayObj.caption|raw }}</p></caption>
+                        <graphic xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{{ objectId }}.{{ displayObj.graphicExtension }}"/>
+                    </fig>
+                {% endif %}
+                {% if displayObj.type == 'table' %}
+                    <table-wrap id="{{ objectId }}" position="float">
+                        <object-id pub-id-type="pii">{{ objectId }}</object-id>
+                        <label>{{ displayObj.label }}</label>
+                        <caption>
+                            <p>{{ displayObj.caption|raw }}</p>
+                        </caption>
+                        {{ displayObj.info|raw }}
+                    </table-wrap>
+                {% endif %}
+            {% endfor %}
+        </sec>
+        {% if article.footnotes|default(false) %}
+        <fn-group>
+            {% for footnote in article.footnotes|default([]) %}
+            <fn>
+                <p>{{ footnote|raw }}</p>
+            </fn>
+            {% endfor %}
+        </fn-group>
+        {% endif %}
+    </back>
+</article>

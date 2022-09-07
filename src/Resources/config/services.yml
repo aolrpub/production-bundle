@@ -1,0 +1,17 @@
+services:
+    _defaults:
+        autoconfigure: true
+        autowire: true
+        public: false
+        bind:
+            $enableROR: '%enable_ror%'
+
+    Aolr\ProductionBundle\:
+            resource: '../../'
+            exclude:
+                - '../../DependencyInjection/'
+                - '../../Entity/'
+                - '../../Element/'
+                - '../../Kernel.php'
+                - '../../Tests/'
+                - '../../Lib/'

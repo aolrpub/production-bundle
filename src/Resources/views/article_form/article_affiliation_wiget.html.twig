@@ -1,0 +1,31 @@
+{% block affiliation_label %}{% endblock %}
+{% block affiliation_widget %}
+    <div class="row p-2" style="border: 2px dotted #0d6efd; border-radius: 4px;">
+        <div class="col-sm-8">
+            <div class="row">
+                <div class="col-sm-4">{{ form_row(form.label) }}</div>
+                <div class="col-sm-8">{{ form_row(form.rorId) }}</div>
+            </div>
+            <label for="article_affiliations_affiliations_0_content" class="required">
+                Content [<a target="_blank" href="https://ror.org/search?page=1&query={{ form.content.vars['value'] }}">Search ROR</a>]
+            </label>
+            {{ form_widget(form.content) }}
+            {{ form_errors(form.content) }}
+        </div>
+
+        <div class="col-md-4 d-flex" style="align-items: end; padding-bottom: 1rem; justify-content: space-evenly;">
+            <a href="#" class="btn btn-sm btn-outline-dark collection-up" title="up">
+                <span class="fa-solid fa-circle-up"></span>
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-dark collection-down" title="down">
+                <span class="fa-solid fa-circle-down"></span>
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-danger collection-remove" title="remove">
+                <span class="fa-solid fa-trash-can"></span>
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-success collection-add" title="add">
+                <span class="fa-solid fa-circle-plus"></span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

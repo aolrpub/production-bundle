@@ -1,0 +1,57 @@
+<style>
+    .reference_persons-collection-actions,.reference_editors-collection-actions {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+<div class="bg-info-lighten p-3">
+{{ form_start(form, {
+    "attr": {
+        "action": path('_conversion_update_article_reference', {"hashKey": conversion_request.hashKey, "index": index})
+    }
+}) }}
+<div class="row mb-2">
+    <div class="col-sm-12">
+        <code>{{ reference.rawText|raw }}</code>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-10">{{ form_row(form.articleTitle) }}</div>
+    <div class="col-sm-2">{{ form_row(form.doi) }}</div>
+</div>
+
+<div class="row">
+    <div class="col-sm-2">{{ form_row(form.publicationType) }}</div>
+    <div class="col-sm-2">{{ form_row(form.source) }}</div>
+    <div class="col-sm-1">{{ form_row(form.year) }}</div>
+    <div class="col-sm-1">{{ form_row(form.volume) }}</div>
+    <div class="col-sm-1">{{ form_row(form.fPage) }}</div>
+    <div class="col-sm-1">{{ form_row(form.lPage) }}</div>
+    <div class="col-sm-2">{{ form_row(form.publisher) }}</div>
+    <div class="col-sm-2">{{ form_row(form.location) }}</div>
+</div>
+{% form_theme form.persons '@AolrProduction/article_form/reference_person_widget.html.twig' %}
+{% form_theme form.editors '@AolrProduction/article_form/reference_person_widget.html.twig' %}
+{{ form_row(form.persons) }}
+{{ form_row(form.editors) }}
+{{ form_rest(form) }}
+<hr>
+<div class="row">
+    <div class="col-sm-12">
+        <button type="reset" class="btn btn-secondary"><i class="fa-solid fa-reply"></i> Reset</button>
+        <button type="submit" class="btn btn-success float-end ms-2"><i class="fa-solid fa-save"></i> Save</button>
+        <button type="button" data-bs-dismiss="modal" class="btn btn-danger float-end ms-2"><i class="fa-solid fa-close"></i> Close</button>
+    </div>
+</div>
+{{ form_end(form) }}
+</div>
+<script>
+    $('.reference-persons').collection({
+        name_prefix:  "{{ form.persons.vars.full_name }}",
+        up: '<a href="#" class="reference_persons-collection-up reference_persons-collection-action"><i class="icon-arrow-left"></i></a>',
+        down: '<a href="#" class="reference_persons-collection-down reference_persons-collection-action"><i class="icon-arrow-right"></i></a>',
+        min: 0,
+        init_with_n_elements: 1
+    });
+</script>

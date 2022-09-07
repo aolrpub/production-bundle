@@ -1,0 +1,27 @@
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+{% form_theme form.affiliations '@AolrProduction/article_form/article_affiliation_wiget.html.twig' %}
+<div class="bg-info-lighten p-3">
+    {{ form_start(form, {
+        "attr": {
+            "action": path('_conversion_update_article_affiliations', {"hashKey": conversion_request.hashKey})
+        }
+    }) }}
+
+    {{ form_widget(form.affiliations) }}
+    {{ form_rest(form) }}
+    <hr>
+    <div class="row">
+        <div class="col-sm-12">
+            <button type="reset" class="btn btn-secondary"><i class="fa-solid fa-reply"></i> Reset</button>
+            <button type="submit" class="btn btn-success float-end ms-2"><i class="fa-solid fa-save"></i> Save</button>
+            <button type="button" data-bs-dismiss="modal" class="btn btn-danger float-end ms-2"><i class="fa-solid fa-close"></i> Close</button>
+        </div>
+    </div>
+{{ form_end(form) }}
+    <script>
+        $('#article_affiliations_affiliations').collection({
+            name_prefix:  "{{ form.affiliations.vars.full_name }}",
+            init_with_n_elements: 1,
+            min: 0
+        });
+    </script>

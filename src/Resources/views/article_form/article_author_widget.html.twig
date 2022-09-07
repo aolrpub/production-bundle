@@ -1,0 +1,31 @@
+{% block author_label %}{% endblock %}
+{% block author_widget %}
+    <div class="row">
+        <div class="col-md-2">
+            {{ form_row(form.surname) }}
+        </div>
+        <div class="col-md-2">
+            {{ form_row(form.givenName) }}
+        </div>
+        <div class="col-md-2">
+            {{ form_row(form.orcid) }}
+        </div>
+        <div class="col-md-2">
+            {{ form_row(form.affs) }}
+        </div>
+        <div class="col-md-4 d-flex" style="align-items: end; padding-bottom: 1rem; justify-content: space-evenly;">
+            <a href="#" class="btn btn-sm btn-outline-dark collection-up" title="up">
+                <span class="fa-solid fa-circle-up"></span>
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-dark collection-down" title="down">
+                <span class="fa-solid fa-circle-down"></span>
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-danger collection-remove" title="remove">
+                <span class="fa-solid fa-trash-can"></span>
+            </a>
+            <a href="#" class="btn btn-sm btn-outline-success collection-add" title="add">
+                <span class="fa-solid fa-circle-plus"></span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

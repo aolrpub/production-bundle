@@ -1,0 +1,91 @@
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+<style>
+    .base_info_permission_licenseContents-collection-actions,.base_info_footnotes-collection-actions {
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+<div class="bg-info-lighten p-3">
+    {{ form_start(form, {
+        'attr': {
+            'action': path('_conversion_update_base_info', {"hashKey": conversion.hashKey})
+        }
+    }) }}
+    <div class="row">
+        <div class="col-sm-3">
+            {{ form_row(form.journal.title) }}
+        </div>
+        <div class="col-sm-2">
+            {{ form_row(form.journal.abbrevTitle) }}
+        </div>
+        <div class="col-sm-3">
+            {{ form_row(form.journal.publisherName) }}
+        </div>
+        <div class="col-sm-2">
+            {{ form_row(form.journal.eIssn) }}
+        </div>
+        <div class="col-sm-2">
+            {{ form_row(form.journal.issn) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            {{ form_row(form.id) }}
+        </div>
+        <div class="col-sm-10">
+            {{ form_row(form.title) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">{{ form_row(form.type) }}</div>
+        <div class="col-sm-3">{{ form_row(form.doi) }}</div>
+        <div class="col-sm-2">{{ form_row(form.volume) }}</div>
+        <div class="col-sm-2">{{ form_row(form.issue) }}</div>
+        <div class="col-sm-2">{{ form_row(form.number) }}</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">{{ form_row(form.publishedDate) }}</div>
+        <div class="col-sm-3">{{ form_row(form.printDate) }}</div>
+        <div class="col-sm-3">{{ form_row(form.receivedDate) }}</div>
+        <div class="col-sm-3">{{ form_row(form.acceptedDate) }}</div>
+    </div>
+    {{ form_row(form.abstract) }}
+    {{ form_row(form.keywords) }}
+    <hr>
+    <div class="row">
+        <div class="col-sm-3">{{ form_row(form.permission.year) }}</div>
+        <div class="col-sm-3">{{ form_row(form.permission.statement) }}</div>
+        <div class="col-sm-3">{{ form_row(form.permission.licenseType) }}</div>
+    </div>
+
+    {% form_theme form.permission.licenseContents '@AolrProduction/article_form/textarea_collection_widget.html.twig' %}
+    {% form_theme form.footnotes '@AolrProduction/article_form/textarea_collection_widget.html.twig' %}
+    {{ form_row(form.permission.licenseContents) }}
+    {{ form_row(form.footnotes) }}
+    {{ form_rest(form) }}
+    <hr>
+    <div class="row">
+        <div class="col-sm-12">
+            <button type="reset" class="btn btn-secondary"><i class="fa-solid fa-reply"></i> Reset</button>
+            <button type="submit" class="btn btn-success float-end ms-2"><i class="fa-solid fa-save"></i> Save</button>
+            <button type="button" data-bs-dismiss="modal" class="btn btn-danger float-end ms-2"><i class="fa-solid fa-close"></i> Close</button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div>
+
+<script>
+$(function() {
+    $('.js-datepicker').datepicker({
+        format: 'yyyy-mm-dd'
+    });
+
+    $('.permission-license,#base_info_footnotes').collection({
+        name_prefix:  "{{ form.permission.vars.full_name }}",
+        up: '<a href="#" class="reference_persons-collection-up reference_persons-collection-action"><i class="icon-arrow-up"></i></a>',
+        down: '<a href="#" class="reference_persons-collection-down reference_persons-collection-action"><i class="icon-arrow-down"></i></a>',
+        min: 0,
+        init_with_n_elements: 1
+    });
+});
+</script>
